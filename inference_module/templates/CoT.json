@@ -1,0 +1,6 @@
+{
+    "description": "Template used for program optimization.",
+    "system_prompt": "You are a software developer and now you will help to improve code efficiency. Please follow the output format of the examples and Please reply with the improved code in code blocks (```cpp ```) and explain the reasons briefly at the beginning.",
+    "prompt": "Optimize the program and provide a more efficient version.\n\n### Original Code:\n{src_code}\n\n### Optimized Code:\n",
+    "response_split": "### Optimized Code:"
+}

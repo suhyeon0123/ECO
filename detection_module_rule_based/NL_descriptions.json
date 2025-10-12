@@ -1,0 +1,72 @@
+{
+    "recursive": {
+        "target_files": ["slow_recursive.json"],
+        "no_results": "No methods were found that might benefit from memoization or DP optimization. All methods appear non-recursive.",
+        "summary": "The following methods appear to be purely recursive:",
+        "mapping": "- Method: {NAME}, Lines {LINE_NUMBER}–{LINE_NUMBER_END}",
+        "rationale": "Memoization or DP optimization can significantly reduce the time complexity of recursive functions "
+    },
+    "bit_manipulation": {
+        "target_files": ["bit_flip.json", "div2.json", "mod2.json", "mul2.json"],
+        "no_results": "No slow bit manipulation patterns were detected. The code does not appear to use inefficient bitwise-replaceable operations.",
+        "summary": "The following operations can be replaced with faster bitwise equivalents:",
+        "mapping": "- Operator: {NAME}, Line: {LINE_NUMBER}",
+        "rationale": "Certain arithmetic operations such as multiplication, division, and modulo can be replaced by faster bitwise operations (e.g., shift, AND)."
+    },
+    "vector": {
+        "target_files": ["slow_vectors.json"],
+        "no_results": "No potential vectors found that could be replaced with fixed-size arrays.",
+        "summary": "The following vectors do not use dynamic operations like insert, erase, or emplace:",
+        "mapping": "- Variable: {NAME}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, a static array or fixed-size container may provide better memory locality."   
+    },
+    "non_hash": {
+        "target_files": ["slow_non_hash.json"],
+        "no_results": "No map/set containers were found that can be replaced with hash-based alternatives.",
+        "summary": "The following map/set variables do not use range queries:",
+        "mapping": "- Variable: {NAME}, Type: {TYPE_FULL_NAME}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, replacing them with hash-based containers can improve average-case performance."
+    },
+    "IO_library": {
+        "target_files": ["cin_cout.json", "getchar_in_loop.json", "string_stream.json"],
+        "no_results": "No slow IO library such as cin, cout, or stringstream usage was detected.",
+        "summary": "The following IO library such as cin, cout, or stringstream usage relies on slow operations:",
+        "mapping": "- Variable: {NAME}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, replacing them with faster alternatives such as scanf, printf can improve performance."
+    },
+    "pow_library": {
+        "target_files": ["pow_arg1.json", "pow_arg2.json", "pow_int.json"],
+        "no_results": "No inefficient pow usage was detected.",
+        "summary": "The following pow calls use small constant arguments:",
+        "mapping": "- Call: {CODE}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, replacing it with multiplication or bit shifts can improve performance."
+    },
+    "literal_math": {
+        "target_files": ["literal_math.json"],
+        "no_results": "No math functions were found with constant arguments.",
+        "summary": "The following math function calls use constant arguments:",
+        "mapping": "- Call: {CODE}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, the result can be computed at compile time to eliminate runtime overhead."
+    },
+    "loop_invariant_math": {
+        "target_files": ["loop_invariant_math.json"],
+        "no_results": "No math functions were found that can be moved out of loops.",
+        "summary": "The following math function calls are invariant to the loop variable:",
+        "mapping": "- Call: {CODE}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, the math function can be moved out of the loop to eliminate runtime overhead."
+    },
+    "expensive_std_in_loop": {
+        "target_files": ["find_in_loop.json", "sort_in_loop.json"],
+        "no_results": "No sorting or searching calls were found inside loops.",
+        "summary": "The following calls to sort or search functions are placed inside loops:",
+        "mapping": "- Call: {NAME}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, move them outside the loop or cache the result."
+    },
+    "string_concat_in_loop": {
+        "target_files": ["string_add.json", "string_concat.json"],
+        "no_results": "No string concatenation operations were found inside loops.",
+        "summary": "The following string concatenation operations occur inside loops:",
+        "mapping": "- Operation: {NAME}, Line: {LINE_NUMBER}",
+        "rationale": "In such cases, using string streams or preallocated buffers for improved performance."
+    }
+}

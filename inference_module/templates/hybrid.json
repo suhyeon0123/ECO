@@ -1,0 +1,5 @@
+{
+    "description": "Template used for program optimization.",
+    "prompt": "Given a program and optimization tips, optimize the program and provide a more efficient version.\n\nFollowings are retrieved examples for optimization.\n\n{retrieved_code_examples}\n\nOptimization tips for the given code:\n{detect_prompts}\n\nNow, optimize the following code.\n\n### Original code:\n{src_code}\n\n### Optimized Code:\n",
+    "response_split": "### Optimized Code:"
+}

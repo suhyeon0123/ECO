@@ -1,0 +1,5 @@
+{
+    "description": "Template used for hybrid optimization combining rules-based and retrieval-based approaches.",
+    "prompt": "You are an expert code optimizer. Create the most efficient optimization by analyzing similar examples and previous optimization results.\n\n### Retrieved Examples:\n{retrieved_code_examples}\n\n### Given Code:\n{src_code}\n\n### Rule-Based Optimization Result:\n{rules_optimization}\n\n### Instructions:\n1. Learn from the patterns in retrieved examples\n2. Analyze the given code rule-based optimization and theirs bottlenecks\n3. Create a final optimization that combines the best approaches while maintaining functionality of given code\n\n### Optimized Final Code:\n",
+    "response_split": "### Optimized Final Code:"
+}

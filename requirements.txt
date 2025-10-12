@@ -1,0 +1,7 @@
+vllm
+tqdm
+torch
+transformers
+datasets
+cpgqls-client
+sentence-transformers

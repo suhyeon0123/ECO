@@ -1,0 +1,6 @@
+{
+    "description": "Template used for program analysis.",
+    "prompt_no_input": "Identify optimization points in this slow code and explain how the transformation to the fast code improves runtime. Provide the output in the following JSON format:\n\n{{\n    \"optimization_points\": [\n        {{\n            \"description\": \"Describe the detail inefficiency issue in slow_code and explain the specific improvement in fast_code.\",\n            \"runtime_improvement\": \"An integer rating (1-10) of how much this optimization improves runtime.\",\n            \"category\": \"Algorithm | Data Structure | Memory Management | Code Execution | System Interaction | ETC\"\n        }},\n        ...\n    ]\n}}\n\nSlow Code:\n{slow_code}\n\nFast Code:\n{fast_code}\n",
+    "response_split": ""
+}
+
