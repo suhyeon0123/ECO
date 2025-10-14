@@ -4,6 +4,9 @@
 
 Unlike traditional approaches that rely solely on instruction-based prompting, ECO provides **explicit optimization guidance** through two specialized detection modules that identify performance bottlenecks and retrieve relevant optimization strategies.
 
+## ECO's performance-aware prompting
+![motivation](https://github.com/user-attachments/assets/00c3a48b-3fe6-4623-8f46-0ba3805c7a01)
+ 
 ---
 
 ## 🚀 Key Features
@@ -49,7 +52,7 @@ ECO_code/
 ---
 
 ## 🔄 Framework Workflow
-
+![fig2 (1)](https://github.com/user-attachments/assets/4efb88e8-7ae8-430a-84dd-ef37576f270b)
 ### 1. Data Preparation
 - **PIE & Codeforce Datasets**: Curated evaluation benchmarks with test cases
 - **HQ Training Corpus**: 4,085 high-quality slow-fast code pairs with performance annotations
