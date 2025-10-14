@@ -175,6 +175,18 @@ sh run_ollama_inference.sh \
 
 
 
+## 📚 Citation
+```bibtex
+@misc{kim2025safereminder,
+  title={ECO: Enhanced Code Optimization via Performance-Aware Prompting for Code-LLMs},
+  author={Kim, Su-Hyeon and Hahn, Joonghyuk and Cha, Sooyoung and Han, Yo-Sub},
+  eprint={2510.10517},
+  archivePrefix={arXiv},
+  url={https://arxiv.org/abs/2510.10517},
+  year={2025}
+}
+```
+Paper link: [arXiv:2510.10517](https://arxiv.org/abs/2510.10517)
 
 ---
 
