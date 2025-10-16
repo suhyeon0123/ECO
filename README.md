@@ -22,25 +22,175 @@ ECO directly provides two complementary forms of guidance:
 
 ---
 
-## 🔄 Framework Workflow
+# 🔄 Framework Workflow
 ![fig2 (1)](https://github.com/user-attachments/assets/4efb88e8-7ae8-430a-84dd-ef37576f270b)
-### 1. ROI Distillation
+## 1. ROI Distillation
 Construct a database of runtime optimization instructions (ROIs) that can serve as prior knowledge for later performance-aware prompting.
 - **HQ Code Pairs**: 4,085 high-quality slow–fast code pairs used as historical optimization examples.
 - **Distilled ROIs**: Abstracted rationales capturing what changed and why the changes improve efficiency.
 - **ROI DB**: A vector-indexed repository of optimization knowledge extracted from the HQ corpus.
 
-### 2. Performance-Aware Prompt Generation
+Examples of extracted ROIs (runtime optimization instructions)
+```
+1. **Replacing ‘cout’ with ‘printf’:**
+The slow code uses ‘cout’, which involves more overhead due to its object−oriented nature,
+while the fast code uses ‘printf’, a function from the C standard library that is more efficient for I/O operations.
 
-#### Symbolic Advisor (Rule-based Detection)
+2. **Precomputing Multiplication Result:**
+In the slow code, the multiplication is done inline within the output statement,
+whereas in the fast code, it’s precomputed and stored in a variable (‘mt‘).
+This avoids recalculating the result multiple times.
+
+3. **Efficient Loop Conditions:**
+The fast code uses ‘i < 10’ instead of ‘i <= 9’, which is slightly more efficient
+as comparing against 10 might be faster, though this is a minor optimization.
+
+4. **Reduced Whitespace and Improved Code Structure:**
+While not affecting runtime, the fast code has cleaner formatting,
+enhancing readability without impacting performance.
+```
+
+
+## 2. Performance-Aware Prompt Generation
+
+### Symbolic Advisor (Rule-based Detection)
 - **Static Analysis**: Uses Joern to generate Code Property Graphs (CPGs)
 - **Bottleneck Detection**: Graph queries identify performance issues (I/O, algorithms, data structures)
 - **Directive Generation**: Converts detected patterns into natural language optimization guidance
 
-#### ROI Retriever (LLM-based optimization instructions retriever)
+#### 🧩 Example of optimization by utilizing Bottleneck Diagnosis from Symbolic Advisor
+
+<table>
+<tr>
+  <th style="text-align:center;">🐢 Slow Recursive (Before)</th>
+  <th style="text-align:center;">⚡ Fast Memoized (After)</th>
+</tr>
+
+<tr>
+<td style="vertical-align:top; width:50%;">
+
+<pre><code class="language-cpp">
+int fib(int n) { 
+    if (n <= 1) return n; 
+    return fib(n-1) + fib(n-2);
+}
+</code></pre>
+
+</td>
+
+<td style="vertical-align:top; width:50%;">
+
+<pre><code class="language-cpp">
+int fib(int n) { 
+    if (n <= 1) return n;
+    if (dp[n] != -1) 
+        return dp[n];
+    dp[n] = fib(n-1) + fib(n-2);
+    return dp[n];
+}
+</code></pre>
+
+</td>
+</tr>
+
+<!-- Bottleneck Diagnosis section -->
+<tr>
+  <th colspan="2" style="text-align:center; padding-top:1em;">🔍 Bottleneck Diagnosis — Recursion Without Memoization</th>
+</tr>
+
+<tr>
+<td colspan="2" style="padding:0.5em 1em;">
+<div style="background:#f9f9f9; border-left:5px solid #2196f3; padding:12px; font-size:90%;">
+The following methods are purely recursive: <code>fib()</code> (lines 1–4).<br>
+Applying <b>memoization</b> or <b>dynamic programming</b> can significantly reduce execution time.<br><br>
+</div>
+</td>
+</tr>
+</table>
+
+---
+
+### ROI Retriever (LLM-based optimization instructions retriever)
 - **Optimization Instructions Extraction**: Uses DeepSeek-R1:32B to extract optimization knowledge from slow-fast pairs
 - **Vector Database**: Stores strategies using Qodo-Embed-1.5B embeddings
 - **Semantic Retrieval**: Retrieves performance-relevant strategies based on input code analysis
+
+#### 🧩 Example: Retrieved ROIs and Coressponding Slow–Fast Code Pair for the input code
+
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <th style="text-align:center; width:33%;">(A) 🧮 Input Code</th>
+    <th style="text-align:center; width:33%;">(B-1) 🐢 Retrieved Slow Code</th>
+    <th style="text-align:center; width:33%;">(B-2) ⚡ Retrieved Fast Code</th>
+  </tr>
+
+  <tr>
+    <!-- (A) Input Code -->
+    <td style="vertical-align:top; padding:8px;">
+<pre><code class="language-cpp">
+int main(){
+  string s;
+  getline(cin, s);
+  if ((s.front() == s.back()) ^ (s.length() % 2))
+    cout << "Case 1" << endl;
+  else
+    cout << "Case 2" << endl;
+}
+</code></pre>
+    </td>
+    <!-- (B-1) Slow Code -->
+    <td style="vertical-align:top; padding:8px;">
+<pre><code class="language-cpp">
+int main(){
+  string s;
+  getline(cin, s);
+  if ((s.front() == s.back()) ^ (s.length() % 2))
+    cout << "Case 1" << endl;
+  else
+    cout << "Case 2" << endl;
+}
+</code></pre>
+    </td>
+    <!-- (B-2) Fast Code -->
+    <td style="vertical-align:top; padding:8px;">
+<pre><code class="language-cpp">
+char s[100005];
+int main() {
+  int l = 0;
+  for (char c = getchar(); c != '\n'; ch = getchar(), l++) {
+    s[l] = ch;
+  }
+  if ((s[0] == s[l-1]) ^ (l % 2))
+    printf("Case 1");
+  else
+    printf("Case 2");
+}
+</code></pre>
+    </td>
+  </tr>
+
+  <!-- (C) Runtime Optimization Instruction -->
+  <tr>
+    <th colspan="3" style="text-align:center; padding-top:12px;">
+      (C) 🛠️ Runtime Optimization Instruction
+    </th>
+  </tr>
+
+  <tr>
+    <td colspan="3" style="padding:8px;">
+<pre><code class="language-text">
+1. Input Method: The slow code uses `cin >> s`, which is slower due to C++ stream overhead. 
+   The fast code replaces it with direct `getchar()` calls.
+2. String Handling: The slow code uses `std::string`, which adds memory and function call overhead, 
+   unlike the fixed-size array in the fast code.
+3. Output Method: Replacing `cout` with `printf` in the fast code results in faster output operations.
+</code></pre>
+    </td>
+  </tr>
+</table>
+
+
+---
 
 ### 3. Code Optimization
 - **Prompt Integration**: Combines guidance from both modules with various prompting strategies
