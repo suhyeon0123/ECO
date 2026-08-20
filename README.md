@@ -111,83 +111,14 @@ Applying <b>memoization</b> or <b>dynamic programming</b> can significantly redu
 ---
 
 ### ROI Retriever (LLM-based optimization instructions retriever)
-- **Optimization Instructions Extraction**: Uses DeepSeek-R1:32B to extract optimization knowledge from slow-fast pairs
-- **Vector Database**: Stores strategies using Qodo-Embed-1.5B embeddings
-- **Semantic Retrieval**: Retrieves performance-relevant strategies based on input code analysis
+The ROI retriever performs performance-aware retrieval, not plain code-similarity retrieval.
 
-#### 🧩 Example: Retrieved ROIs and Coressponding Slow–Fast Code Pair for the input code
+1. The target inference model describes the input program from a runtime-performance perspective without proposing a rewrite.
+2. The description is embedded with Qodo/Qodo-Embed-1-1.5B.
+3. ECO retrieves the top-k ROIs whose performance characteristics best match the input.
+4. The retrieved slow-fast pairs and their explicit ROIs are added to the optimization prompt.
 
-<table style="width:100%; table-layout:fixed;">
-  <tr>
-    <th style="text-align:center; width:33%;">(A) 🧮 Input Code</th>
-    <th style="text-align:center; width:33%;">(B-1) 🐢 Retrieved Slow Code</th>
-    <th style="text-align:center; width:33%;">(B-2) ⚡ Retrieved Fast Code</th>
-  </tr>
-
-  <tr>
-    <!-- (A) Input Code -->
-    <td style="vertical-align:top; padding:8px;">
-<pre><code class="language-cpp">
-int main(){
-  string s;
-  getline(cin, s);
-  if ((s.front() == s.back()) ^ (s.length() % 2))
-    cout << "Case 1" << endl;
-  else
-    cout << "Case 2" << endl;
-}
-</code></pre>
-    </td>
-    <!-- (B-1) Slow Code -->
-    <td style="vertical-align:top; padding:8px;">
-<pre><code class="language-cpp">
-int main(){
-  string s;
-  getline(cin, s);
-  if ((s.front() == s.back()) ^ (s.length() % 2))
-    cout << "Case 1" << endl;
-  else
-    cout << "Case 2" << endl;
-}
-</code></pre>
-    </td>
-    <!-- (B-2) Fast Code -->
-    <td style="vertical-align:top; padding:8px;">
-<pre><code class="language-cpp">
-char s[100005];
-int main() {
-  int l = 0;
-  for (char c = getchar(); c != '\n'; ch = getchar(), l++) {
-    s[l] = ch;
-  }
-  if ((s[0] == s[l-1]) ^ (l % 2))
-    printf("Case 1");
-  else
-    printf("Case 2");
-}
-</code></pre>
-    </td>
-  </tr>
-
-  <!-- (C) Runtime Optimization Instruction -->
-  <tr>
-    <th colspan="3" style="text-align:center; padding-top:12px;">
-      (C) 🛠️ Runtime Optimization Instruction
-    </th>
-  </tr>
-
-  <tr>
-    <td colspan="3" style="padding:8px;">
-<pre><code class="language-text">
-1. Input Method: The slow code uses `cin >> s`, which is slower due to C++ stream overhead. 
-   The fast code replaces it with direct `getchar()` calls.
-2. String Handling: The slow code uses `std::string`, which adds memory and function call overhead, 
-   unlike the fixed-size array in the fast code.
-3. Output Method: Replacing `cout` with `printf` in the fast code results in faster output operations.
-</code></pre>
-    </td>
-  </tr>
-</table>
+The retrieved program may solve a different task from the input. What matters is that it exhibits a relevant performance pattern, such as stream-I/O overhead, unnecessary dynamic allocation, repeated sorting, or an avoidable complexity bottleneck.
 
 
 ---
